@@ -59,9 +59,8 @@ function run() {
             'github_token'
         ];
         try {
-            const secretsJson = core.getInput('secrets', {
-                required: true
-            });
+            const secretsJson = core.getInput('secrets') || '{}';
+            const variablesJson = core.getInput('variables') || '{}';
             const keyPrefix = core.getInput('prefix');
             const includeListStr = core.getInput('include');
             const excludeListStr = core.getInput('exclude');
@@ -74,15 +73,11 @@ function run() {
             const override = overrideStr.length ? overrideStr === 'true' : true;
             let secrets;
             try {
-                secrets = JSON.parse(secretsJson);
+                secrets = Object.assign(Object.assign({}, JSON.parse(secretsJson)), JSON.parse(variablesJson));
+                core.debug(`ssecrets: ${JSON.stringify(secrets)}`);
             }
             catch (e) {
-                throw new Error(`Cannot parse JSON secrets.
-Make sure you add the following to this action:
-
-with:
-      secrets: \${{ toJSON(secrets) }}
-`);
+                throw new Error(JSON.stringify(e));
             }
             let includeList = null;
             if (includeListStr.length) {

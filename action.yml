@@ -3,8 +3,11 @@ description: 'Utility action that exports all github secrets to environment vari
 author: 'Jose Pereira @oNaiPs'
 inputs:
   secrets:
-    required: true
+    required: false
     description: JSON representation of the secrets, use provided placeholder'
+  variables:
+    required: false
+    description: JSON representation of the variables, use provided placeholder'
   prefix:
     required: false
     description: 'Prefix to add to all secrets, e.g.: SECRET_'

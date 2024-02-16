@@ -21,9 +21,8 @@ export default async function run(): Promise<void> {
   ]
 
   try {
-    const secretsJson: string = core.getInput('secrets', {
-      required: true
-    })
+    const secretsJson: string = core.getInput('secrets') || '{}'
+    const variablesJson = core.getInput('variables') || '{}'
     const keyPrefix: string = core.getInput('prefix')
     const includeListStr: string = core.getInput('include')
     const excludeListStr: string = core.getInput('exclude')
@@ -37,14 +36,10 @@ export default async function run(): Promise<void> {
 
     let secrets: Record<string, string>
     try {
-      secrets = JSON.parse(secretsJson)
+      secrets = {...JSON.parse(secretsJson), ...JSON.parse(variablesJson)}
+      core.debug(`ssecrets: ${JSON.stringify(secrets)}`)
     } catch (e) {
-      throw new Error(`Cannot parse JSON secrets.
-Make sure you add the following to this action:
-
-with:
-      secrets: \${{ toJSON(secrets) }}
-`)
+      throw new Error(JSON.stringify(e))
     }
 
     let includeList: string[] | null = null

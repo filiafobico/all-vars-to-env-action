@@ -14,6 +14,7 @@ jobs:
         uses: ./
         with:
           secrets: ${{ toJSON(secrets) }}
+          variables: ${{ toJSON(vars) }}
           exclude: non-existent,SECRET_2
         env:
           SECRET_1: 1234 # Should show override warning
@@ -22,6 +23,7 @@ jobs:
           [[ "${SECRET_1}" != "VALUE_1" ]] && echo "Could not export SECRET_1 secret, value is ${SECRET_1}" && exit 1
           [[ "${SECRET_2}" != "" ]] && echo "SECRET_2 should be unset, got ${SECRET_2}" && exit 1
           [[ "${SECRET_3}" != "VALUE_3" ]] && echo "Could not export SECRET_3 secret, value is ${SECRET_3}" && exit 1
+          [[ "${PROJECT_VARIABLE}" != "PROJECT_VARIABLE" ]] && echo "Could not export PROJECT_VARIABLE variable, value is ${PROJECT_VARIABLE}" && exit 1
           true
         shell: bash
 
